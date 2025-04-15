@@ -1,0 +1,126 @@
+---
+logging.level.root: info
+---
+security.basic.enabled: false
+---
+app:
+  dispatch:
+    commands:
+    - opcode: test.command
+      commandClassName: com.inzi.mes.be.framework.dispatch.DispatchTestCommand
+---
+app:
+  kafka:
+    use: true
+    topics:
+      - topicName: mes-topic-response
+        countOfPartition: 1
+        countOfReplica: 1
+    consumers:
+      - consumerName: reply-consumer
+        consumerInfo: reply-consumer
+        topicName: topic-response
+        groupId: consumer-group
+        partition: 0
+        countOfConcurrency: 1
+        listenerBeanName: kafka.topic.example.listener  
+---
+app:
+  authorization:
+    permits:
+    # type: all, has-any-role, has-a-role, authenticated
+    # if type is all and anyRequest is true, then anyRequest().permitAll()
+    - type: authenticated
+      anyRequest: false
+      matchers:
+      - method: GET
+        pathname: /api/v1/**
+      - method: POST
+        pathname: /api/v1/**
+    - type: all
+      anyRequest: true
+      matchers:
+      - method: GET
+        pathname: /swagger-ui.html
+      - method: POST
+        pathname: /auth/**
+    #- type: has-any-role
+    #  anyRequest: false
+    #  matchers:
+    #  - method: PUT
+    #    pathname: /test/pathname1
+    #  - method: DELETE
+    #    pathname: /test/pathname2
+    #  roles:
+    #  - ADMIN
+    #  - USER
+    #- type: has-a-role
+    #  anyRequest: false
+    #  matchers:
+    #  - method: GET
+    #    pathname: /test/pathname1
+    #  role: ADMIN      
+    #- type: authenticated
+    #  anyRequest: false
+    #  matchers:
+    #  - method: POST
+    #    pathname: pathname1 
+---
+app:
+  cors:
+    allAllowOrigins: false
+    allowedOrigins:
+    - http://localhost:3001
+    #allAllowOriginPatterns: true
+    #allowedOriginPatterns:
+    #- ALL
+    # allowedOrigins or allowedOriginPatterns can not be written at the same time 
+    allAllowHeaders: true
+    allowedHeaders:
+    - authorization
+    - aaa
+    allAllowMethods: true
+    allowedMethods:
+    - ALL
+    allowedCredential: true 
+    # corsConfigurationPattern: /auth/** or /**
+    corsConfigurationPattern: /**
+---
+app:
+  authentication:
+    jwt:
+      issuer: MES-FRAMEWORK
+      secret: hahahahahahahahahahahahahahahaaaaabdbsdjfskdjflaskdjflaskdfjlaskdfjaskldfjaslkdfjas
+      token-access-expiration-milli-seconds: 10000000
+      token-refresh-expiration-milli-seconds: 1000000000
+---
+# To use camunda springboot rest client
+feign:
+  client:
+    config:
+      default:
+        url: "http://localhost:8088/engine-rest/"
+      # processInstance:
+      #   url: "http://your-process-engine-host/engine-rest/"
+      # processDefinition:
+      #   url: "http://your-process-engine-host/engine-rest/"
+      # message:
+      #   url: "http://your-process-engine-host/engine-rest/"
+---
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate.ddl-auto: update
+    show-sql: true
+    properties.hibernate.format_sql: true
+  datasource:
+    driverClassName: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/quartz-test
+    username: root
+    password: 1qazxsw2  
+  redis:
+    host: localhost
+    #password:
+    port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
