@@ -51,12 +51,18 @@ public class AuthServiceImpl implements AuthService {
 		Authentication authentication = this.authenticate(loginRequest.getId(), loginRequest.getPassword());
 		JwTokenInfo tokenInfo=this.jwTokenProvider.createTokens(authentication);
 		JwtRefreshTokenEntity tokenEntity = new JwtRefreshTokenEntity();
-		tokenEntity.setAccessToken(tokenInfo.getAccessToken());;
+		tokenEntity.setId(tokenInfo.getAccessToken());
+		tokenEntity.setAccessToken(tokenInfo.getAccessToken());
 		tokenEntity.setUserId(loginRequest.getId());
 		tokenEntity.setRefreshToken(tokenInfo.getRefreshToken());
 		tokenEntity.setRemoteAddress(loginRequest.getRemoteAddress());
 		tokenEntity.setTimeToLive(tokenInfo.getRefreshTokenExpiredTime().getTime());
 
+		// access token 기준으로 저장
+		jwRefreshTokenRepository.save(tokenEntity);
+		
+		// refresh token 기준으로 저장
+		tokenEntity.setId(tokenInfo.getRefreshToken());
 		jwRefreshTokenRepository.save(tokenEntity);
 		
 		UserInfo uInfo = (UserInfo) authentication.getDetails();
@@ -73,15 +79,14 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		return suser;
-
 	}
 
 	@Override
 	@Transactional
-	public SecurityUser reissue(String remoteAddress, String accessToken, String refreshToken) {
+	public SecurityUser reissue(String remoteAddress, String refreshToken) {
 		log.info("");
 		try {
-			boolean valid=jwTokenProvider.validateToken(accessToken, refreshToken, remoteAddress, true);
+			boolean valid=jwTokenProvider.validateToken(refreshToken, remoteAddress, true);
 			if(!valid) {
 				throw new InvalidTokenException("Invalid refresh token.");
 			}
@@ -94,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		// refresh token rotation 기법적용
-		Optional<JwtRefreshTokenEntity> optional = jwRefreshTokenRepository.findById(accessToken);
+		Optional<JwtRefreshTokenEntity> optional = jwRefreshTokenRepository.findById(refreshToken);
 		if (optional.isEmpty() || !refreshToken.equals(optional.get().getRefreshToken())) {
 			throw new InvalidTokenException("Different refresh token.");
 	    }
@@ -111,17 +116,24 @@ public class AuthServiceImpl implements AuthService {
         		new UsernamePasswordAuthenticationToken(uInfo.getId(), uInfo.getPassword(), uInfo.getAuthorities());
 		JwTokenInfo tokenInfo=this.jwTokenProvider.createTokens(authenticationToken);
 		
-		// delete existing legacy refresh token
+		// refresh token 을 키로 하는 토큰정보 삭제
+		jwRefreshTokenRepository.delete(refreshTokenEntity);
+		// access  token 을 키로 하는 토큰정보 삭제
+		refreshTokenEntity.setId(refreshTokenEntity.getAccessToken());
 		jwRefreshTokenRepository.delete(refreshTokenEntity);
 		
 		JwtRefreshTokenEntity newTokenEntity = new JwtRefreshTokenEntity();
+		newTokenEntity.setId(tokenInfo.getAccessToken());
 		newTokenEntity.setAccessToken(tokenInfo.getAccessToken());
 		newTokenEntity.setRefreshToken(tokenInfo.getRefreshToken());
 		newTokenEntity.setUserId(uInfo.getId());
 		newTokenEntity.setRemoteAddress(remoteAddress);
 		newTokenEntity.setTimeToLive(tokenInfo.getRefreshTokenExpiredTime().getTime());
 
-		// save new refresh token
+		// access token 기준으로 토큰정보 저장
+		jwRefreshTokenRepository.save(newTokenEntity);
+		// refresh token 기준으로 토큰정보 저장
+		newTokenEntity.setId(tokenInfo.getRefreshToken());
 		jwRefreshTokenRepository.save(newTokenEntity);
 
 		SecurityUser suser = new SecurityUser(uInfo);
@@ -132,11 +144,11 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	@Transactional
-	public void logout(String userId, String remoteAddress, String accessToken, String refreshToken) {
+	public void logout(String userId, String remoteAddress, String accessToken) {
 		log.info("");
 		// check validation
 		try {
-			boolean valid=jwTokenProvider.validateToken(accessToken, refreshToken, remoteAddress, true);
+			boolean valid=jwTokenProvider.validateToken(accessToken, remoteAddress, true);
 			if(!valid) {
 				throw new InvalidTokenException("Invalid refresh token.");
 			}
@@ -145,11 +157,15 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		Optional<JwtRefreshTokenEntity> optional = jwRefreshTokenRepository.findById(accessToken);
-		// delete refresh token information
-		jwRefreshTokenRepository.deleteById(accessToken);
-		if (optional.isEmpty() || !refreshToken.equals(optional.get().getRefreshToken())) {
+
+		if (optional.isEmpty() || !accessToken.equals(optional.get().getAccessToken())) {
 			throw new InvalidTokenException("Different refresh token.");
 		}
+		
+		// access  token 기준으로 토큰정보 제거
+		jwRefreshTokenRepository.deleteById(accessToken);
+		// refresh token 기준으로 토큰정보 제거
+		jwRefreshTokenRepository.deleteById(optional.get().getRefreshToken());
 
 		// update user information
 		try {

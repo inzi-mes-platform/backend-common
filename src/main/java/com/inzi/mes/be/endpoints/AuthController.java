@@ -59,7 +59,7 @@ public class AuthController {
 		cookie.setHttpOnly(true);
 		// 서로 다른 사이트 (SPA와 어플리케이션은 다른 사이트임)라도 이 쿠키를 적용함
 		cookie.setAttribute("SameSite", "Lax");
-		// https 일 경우에만 이 쿠키를 적용함
+		// https 일 경우에만 이 쿠키를 적용함 (설정에 의해서 동작하도록 수졍해야 함)
 //		cookie.setSecure(true);
 		response.addCookie(cookie);
 
@@ -79,15 +79,15 @@ public class AuthController {
 	}
 	
 	@PostMapping("/reissue")
-    public ResponseEntity<Void> reissueAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public LoginResponse reissueAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug("reissue AccessToken start");
         
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String accessToken = resolveAccessToken(request);
+//        String accessToken = resolveAccessToken(request);
         String remoteAddress = extractRemoteAddress(request);
         Cookie cookie = WebUtils.getCookie(request, KEY_REFRESH_TOKEN);
 
-        SecurityUser suser = authService.reissue(remoteAddress, accessToken, cookie.getValue());
+        SecurityUser suser = authService.reissue(remoteAddress, cookie.getValue());
  
         int maxAge=(int)suser.getJwTokenInfo().getRefreshTokenExpiredTime().getTime()/1000-(int)new Date().getTime()/1000;
         cookie = new Cookie(KEY_REFRESH_TOKEN, suser.getJwTokenInfo().getRefreshToken());
@@ -106,7 +106,8 @@ public class AuthController {
 		// 자바스크립트로 가져갈 수 있도록, 웹 브라우저에서 Authorization을 노출시킴 
 		response.setHeader("Access-Control-Expose-Headers", "Authorization");
 
-		return ResponseEntity.ok().build();
+		return new LoginResponse(true, suser.getUserInfo());
+//		return ResponseEntity.ok().build();
     }
 	
 	@Operation(
@@ -123,10 +124,10 @@ public class AuthController {
 
 		String accessToken = resolveAccessToken(request);
 		String remoteAddress = extractRemoteAddress(request);
-		String refreshToken = findCookie(request).getValue();
+//		String refreshToken = findCookie(request).getValue();
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		authService.logout(authentication.getName(), remoteAddress, accessToken, refreshToken);
+		authService.logout(authentication.getName(), remoteAddress, accessToken);
 		SecurityContextHolder.clearContext();
 		// remove cookie
 		Cookie cookie = new Cookie(KEY_REFRESH_TOKEN, "");
@@ -138,13 +139,13 @@ public class AuthController {
 		return ResponseEntity.ok().build();
 	}
 	
-	private Cookie findCookie(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		for(Cookie cookie:cookies) {
-			if(KEY_REFRESH_TOKEN.equals(cookie.getName())) return cookie;
-		}
-		return null;
-	}
+//	private Cookie findCookie(HttpServletRequest request) {
+//		Cookie[] cookies = request.getCookies();
+//		for(Cookie cookie:cookies) {
+//			if(KEY_REFRESH_TOKEN.equals(cookie.getName())) return cookie;
+//		}
+//		return null;
+//	}
 	
 	private String resolveAccessToken(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
