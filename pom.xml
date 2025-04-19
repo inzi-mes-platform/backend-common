@@ -144,12 +144,12 @@
 		    <!--<version>3.17.0</version>-->
 		</dependency>
 		
-		<!--<dependency>
+		<dependency>
     		<groupId>inzi-mes-platform</groupId>
     		<artifactId>inzi-mes-backend-framework-core</artifactId>
     		<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
+		<!--<dependency>
     		<groupId>inzi-mes-platform</groupId>
     		<artifactId>inzi-mes-backend-framework-transport-kafka</artifactId>
     		<version>0.0.1-SNAPSHOT</version>
@@ -189,13 +189,13 @@
   	<distributionManagement>
   		<repository>
   			<id>nexus</id> <!-- settings.xml server id -->
-  			<url>http://211.104.139.36:8081/repository/inzi-mes-platform-maven-private/</url>
-  			<!--<url>http://localhost:8081/repository/inzi-mes-platform-maven-private/</url>-->
+  			<!--<url>http://211.104.139.36:8081/repository/inzi-mes-platform-maven-private/</url>-->
+  			<url>http://localhost:8081/repository/inzi-mes-platform-maven-private/</url>
   		</repository>
   		<snapshotRepository>
   			<id>nexus</id> <!-- settings.xml server id -->
-  			<url>http://211.104.139.36:8081/repository/inzi-mes-platform-maven-private-snapshot/</url>
-  			<!--<url>http://localhost:8081/repository/inzi-mes-platform-maven-private-snapshot/</url>-->
+  			<!--<url>http://211.104.139.36:8081/repository/inzi-mes-platform-maven-private-snapshot/</url>-->
+  			<url>http://localhost:8081/repository/inzi-mes-platform-maven-private-snapshot/</url>
   		</snapshotRepository>
   	</distributionManagement>
   	
