@@ -1,3 +1,11 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 7200
+  shutdown:
+    grace-period: 7200
+server.shutdown: graceful
 ---
 logging.level.root: debug
 ---
@@ -108,6 +116,9 @@ feign:
       #   url: "http://your-process-engine-host/engine-rest/"
 ---
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate.ddl-auto: update
@@ -124,3 +135,69 @@ spring:
     port: 6379
   kafka:
     bootstrap-servers: localhost:9092
+---
+# To use camunda
+camunda:
+  autoDeploy:
+    bpmnResources: 'classpath*:**/*.bpmn'
+    dmnResources: 'classpath*:**/*.dmn'
+    formResources: 'classpath*:**/*.form'
+    enabled: false
+    failStartupOnError: false
+  bpm:
+    client:
+      base-url: http://localhost:8080/engine-rest
+---
+# To use springdoc
+springdoc:
+  version: '@project.version@'
+  api-docs.path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    disable-query-params-without-oauth2: true
+    doc-expansion: none
+  #path-to-match:
+  #- /auth/**
+  #- /api/**
+---
+# To use java management
+management:
+  server.port: 8902
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      enabled: true
+      group:
+        liveness.include: livenessState
+        readiness.include: readinessState,db
+        liveness.show-details: always
+        readiness.show-details: always
+      probes.enabled: true
+      show-details: always
+    info.enabled: true
+    shutdown.enabled: true
+  health:
+    db.enabled: true
+    readinessstate.enabled: true
+    livenessstate.enabled: true   
+endpoints:
+  shutdown:
+    enabled: true
+---
+# To use spring boot admin client
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8090
+        instance.name: Schedule Job Management
+        instance.service.base-url: http://localhost:8080
