@@ -199,5 +199,5 @@ spring:
     admin:
       client:
         url: http://localhost:8090
-        instance.name: Schedule Job Management
+        instance.name: Common Service Application
         instance.service.base-url: http://localhost:8080
