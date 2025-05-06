@@ -78,7 +78,7 @@ app:
   cors:
     allAllowOrigins: false
     allowedOrigins:
-    - http://localhost:3007
+    - http://localhost:3001
     #allAllowOriginPatterns: true
     #allowedOriginPatterns:
     #- ALL
