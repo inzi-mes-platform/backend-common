@@ -78,7 +78,7 @@ app:
   cors:
     allAllowOrigins: false
     allowedOrigins:
-    - http://localhost:3001
+    - http://localhost:3007
     #allAllowOriginPatterns: true
     #allowedOriginPatterns:
     #- ALL
@@ -167,7 +167,7 @@ springdoc:
 ---
 # To use java management
 management:
-  server.port: 8902
+  server.port: 8980
   endpoints:
     enabled-by-default: true
     web:
