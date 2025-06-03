@@ -46,12 +46,18 @@ app:
       - method: POST
         pathname: /api/v1/**
     - type: all
-      anyRequest: true
+      anyRequest: false
       matchers:
       - method: GET
         pathname: /swagger-ui.html
+      - method: GET
+        pathname: /swagger-ui/**
+      - method: GET
+        pathname: /api-docs/**		
       - method: POST
         pathname: /auth/**
+      - method: GET
+        pathname: /test/streaming/**		
     #- type: has-any-role
     #  anyRequest: false
     #  matchers:
@@ -194,10 +200,10 @@ endpoints:
     enabled: true
 ---
 # To use spring boot admin client
-spring:
-  boot:
-    admin:
-      client:
-        url: http://localhost:8090
-        instance.name: Common Service Application
-        instance.service.base-url: http://localhost:8080
+#spring:
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:8090
+#        instance.name: Common Service Application
+#        instance.service.base-url: http://localhost:8080
