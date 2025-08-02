@@ -109,11 +109,11 @@ app:
       token-refresh-expiration-milli-seconds: 1000000000
 ---
 # To use camunda springboot rest client
-feign:
-  client:
-    config:
-      default:
-        url: "http://localhost:8088/engine-rest/"
+# feign:
+#   client:
+#     config:
+#       default:
+#         url: "http://localhost:8088/engine-rest/"
       # processInstance:
       #   url: "http://your-process-engine-host/engine-rest/"
       # processDefinition:
@@ -144,15 +144,15 @@ spring:
 ---
 # To use camunda
 camunda:
+  bpm:
+    client:
+      base-url: http://localhost:8099/engine-rest
   autoDeploy:
     bpmnResources: 'classpath*:**/*.bpmn'
     dmnResources: 'classpath*:**/*.dmn'
     formResources: 'classpath*:**/*.form'
     enabled: false
-    failStartupOnError: false
-  bpm:
-    client:
-      base-url: http://localhost:8080/engine-rest
+    failStartupOnError: false 
 ---
 # To use springdoc
 springdoc:

@@ -6,7 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages="com.inzi.mes.be")
+@ComponentScan(
+		basePackages={ "org.camunda", "com.inzi.mes.be" }
+)
 public class CommonApplication implements CommandLineRunner {
 	
     public static void main( String[] args ) {

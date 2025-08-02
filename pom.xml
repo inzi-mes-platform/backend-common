@@ -21,7 +21,22 @@
     	<java.version>17</java.version>
     	<maven.compiler.source>17</maven.compiler.source>
     	<maven.compiler.target>17</maven.compiler.target>
+    	<version.camunda>7.20.0</version.camunda>
+    	<camunda-platform-7-rest-client-spring-boot.version>7.22.3</camunda-platform-7-rest-client-spring-boot.version>
+    	<spring-cloud.version>2024.0.1</spring-cloud.version>
   	</properties>
+  	
+  	<dependencyManagement>
+		<dependencies>
+		  <dependency>
+		    <groupId>org.springframework.cloud</groupId>
+		    <artifactId>spring-cloud-dependencies</artifactId>
+		    <version>${spring-cloud.version}</version>
+		    <type>pom</type>
+		    <scope>import</scope>
+		  </dependency>
+		</dependencies>
+	</dependencyManagement>
 
   	<dependencies>
   		<dependency>
@@ -164,12 +179,26 @@
     		<groupId>inzi-mes-platform</groupId>
     		<artifactId>inzi-mes-backend-framework-transport-kafka</artifactId>
     		<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
     		<groupId>inzi-mes-platform</groupId>
     		<artifactId>inzi-mes-backend-framework-workflow-camunda</artifactId>
     		<version>0.0.1-SNAPSHOT</version>
-		</dependency>-->
+		</dependency>
+		<dependency>
+			<groupId>org.camunda.community</groupId>
+		    <artifactId>camunda-engine-rest-client-openapi-springboot</artifactId>
+		    <version>7.20.0</version>
+	    </dependency>
+	    <dependency>
+  			<groupId>org.camunda.bpm</groupId>
+  			<artifactId>camunda-engine-rest-openapi</artifactId>
+  			<version>${version.camunda}</version>
+		</dependency>
+		<dependency>
+		  <groupId>io.github.openfeign</groupId>
+		  <artifactId>feign-httpclient</artifactId>
+		</dependency>
 		
 		<!-- springboot 3.x에서 swagger를 사용하기 위해서는 아래 의존성 라이브러리를 추가해 주어야 함-->
 		<dependency>
@@ -200,13 +229,13 @@
   	<distributionManagement>
   		<repository>
   			<id>nexus</id> <!-- settings.xml server id -->
-  			<url>http://211.104.139.36:8081/repository/inzi-mes-platform-maven-private/</url>
-  			<!--<url>http://localhost:8081/repository/inzi-mes-platform-maven-private/</url>-->
+  			<!--<url>http://211.104.139.36:8081/repository/inzi-mes-platform-maven-private/</url>-->
+  			<url>http://localhost:8081/repository/inzi-mes-platform-maven-private/</url>
   		</repository>
   		<snapshotRepository>
   			<id>nexus</id> <!-- settings.xml server id -->
-  			<url>http://211.104.139.36:8081/repository/inzi-mes-platform-maven-private-snapshot/</url>
-  			<!--<url>http://localhost:8081/repository/inzi-mes-platform-maven-private-snapshot/</url>-->
+  			<!--<url>http://211.104.139.36:8081/repository/inzi-mes-platform-maven-private-snapshot/</url>-->
+  			<url>http://localhost:8081/repository/inzi-mes-platform-maven-private-snapshot/</url>
   		</snapshotRepository>
   	</distributionManagement>
   	
