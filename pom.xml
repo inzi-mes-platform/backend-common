@@ -185,6 +185,7 @@
     		<artifactId>inzi-mes-backend-framework-workflow-camunda</artifactId>
     		<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- camunda adapter에서 참조하고 있는 라이브러리들-->
 		<dependency>
 			<groupId>org.camunda.community</groupId>
 		    <artifactId>camunda-engine-rest-client-openapi-springboot</artifactId>
@@ -195,6 +196,11 @@
   			<artifactId>camunda-engine-rest-openapi</artifactId>
   			<version>${version.camunda}</version>
 		</dependency>
+		<!--<dependency>
+		    <groupId>org.camunda.bpm.springboot</groupId>
+		    <artifactId>camunda-bpm-spring-boot-starter-external-task-client</artifactId>
+		    <version>7.20.0</version>
+		</dependency>-->
 		<dependency>
 		  <groupId>io.github.openfeign</groupId>
 		  <artifactId>feign-httpclient</artifactId>

@@ -51,10 +51,10 @@ public class WorkflowServiceImpl implements WorkflowService {
 				firstResult=query.getFirstResult(), 
 				maxResults=query.getMaxResults();
 		if(firstResult==null || maxResults==null) {
-			if( pageNum==null ) pageNum=1;
+			if( pageNum==null ) pageNum=0;
 			if( rowsPerPage==null ) rowsPerPage=5;
-			query.setFirstResult( (pageNum-1)*rowsPerPage );
-			query.setMaxResults( query.getFirstResult()+rowsPerPage-1 );
+			query.setFirstResult( pageNum*rowsPerPage );
+			query.setMaxResults( rowsPerPage );
 		}
 		return workflowManager.findProcessDefinitionsByQuery(query);
 	}
@@ -67,10 +67,10 @@ public class WorkflowServiceImpl implements WorkflowService {
 				firstResult=query.getFirstResult(), 
 				maxResults=query.getMaxResults();
 		if(firstResult==null || maxResults==null) {
-			if( pageNum==null ) pageNum=1;
+			if( pageNum==null ) pageNum=0;
 			if( rowsPerPage==null ) rowsPerPage=5;
-			query.setFirstResult( (pageNum-1)*rowsPerPage );
-			query.setMaxResults( query.getFirstResult()+rowsPerPage-1 );
+			query.setFirstResult( pageNum*rowsPerPage );
+			query.setMaxResults( rowsPerPage );
 		}
 		return workflowManager.findProcessInstanceByQuery(query);
 	}
@@ -113,10 +113,10 @@ public class WorkflowServiceImpl implements WorkflowService {
 				firstResult=query.getFirstResult(), 
 				maxResults=query.getMaxResults();
 		if(firstResult==null || maxResults==null) {
-			if( pageNum==null ) pageNum=1;
+			if( pageNum==null ) pageNum=0;
 			if( rowsPerPage==null ) rowsPerPage=5;
-			query.setFirstResult( (pageNum-1)*rowsPerPage );
-			query.setMaxResults( query.getFirstResult()+rowsPerPage-1 );
+			query.setFirstResult( pageNum*rowsPerPage );
+			query.setMaxResults( rowsPerPage );
 		}
 		return workflowManager.findHistoricProcessInstanceByQuery(query);
 	}
@@ -129,10 +129,10 @@ public class WorkflowServiceImpl implements WorkflowService {
 				firstResult=query.getFirstResult(), 
 				maxResults=query.getMaxResults();
 		if(firstResult==null || maxResults==null) {
-			if( pageNum==null ) pageNum=1;
+			if( pageNum==null ) pageNum=0;
 			if( rowsPerPage==null ) rowsPerPage=5;
-			query.setFirstResult( (pageNum-1)*rowsPerPage );
-			query.setMaxResults( query.getFirstResult()+rowsPerPage-1 );
+			query.setFirstResult( pageNum*rowsPerPage );
+			query.setMaxResults( rowsPerPage );
 		}
 		return workflowManager.findTasksByQuery(query);
 	}
@@ -163,10 +163,10 @@ public class WorkflowServiceImpl implements WorkflowService {
 				firstResult=query.getFirstResult(), 
 				maxResults=query.getMaxResults();
 		if(firstResult==null || maxResults==null) {
-			if( pageNum==null ) pageNum=1;
+			if( pageNum==null ) pageNum=0;
 			if( rowsPerPage==null ) rowsPerPage=5;
-			query.setFirstResult( (pageNum-1)*rowsPerPage );
-			query.setMaxResults( query.getFirstResult()+rowsPerPage-1 );
+			query.setFirstResult( pageNum*rowsPerPage );
+			query.setMaxResults( rowsPerPage );
 		}
 		return workflowManager.findHistoricTasksByQuery(query);
 	}

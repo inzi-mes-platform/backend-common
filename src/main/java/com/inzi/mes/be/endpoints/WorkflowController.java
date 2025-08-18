@@ -54,15 +54,25 @@ public class WorkflowController {
 		return workflowService.getProcessDefinitionDiagramByBpmn20Xml(processDefinitionId);
 	}
 
-	@PostMapping(value="/process-definition/find/byCond")
+	@PostMapping(value="/process-definition/find")
 	@ResponseBody
 	@CrossOrigin
 	public List<ProcessDefinitionInfo> findProcessDefinitions(@RequestBody ProcessDefinitionQueryInfo query) {
 		log.debug("");
 		return workflowService.findProcessDefinitions(query);
 	}
+	
+	@GetMapping(value="/process-instance/find/byPrpcessDefinition/{processDefinitionId}")
+	@ResponseBody
+	@CrossOrigin
+	public List<ProcessInstanceInfo> findProcessInstances(@PathVariable("") String processDefinitionId) {
+		log.debug("");
+		ProcessInstanceQueryInfo query=new ProcessInstanceQueryInfo();
+		query.setProcessDefinitionId(processDefinitionId);
+		return workflowService.findProcessInstances(query);
+	}
 
-	@PostMapping(value="/process-instance/find/byCond")
+	@PostMapping(value="/process-instance/find")
 	@ResponseBody
 	@CrossOrigin
 	public List<ProcessInstanceInfo> findProcessInstances(@RequestBody ProcessInstanceQueryInfo query) {
@@ -101,7 +111,7 @@ public class WorkflowController {
 
 	@GetMapping(value="/process-instance/start/{processDefinitionId}/{businessKey}")
 	@CrossOrigin
-	public String startNewProcessInstance(@PathVariable("processInstanceId") String processDefinitionId, @PathVariable("businessKey") String businessKey) {
+	public String startNewProcessInstance(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("businessKey") String businessKey) {
 		log.debug("");
 		return workflowService.startNewProcessInstance(processDefinitionId, businessKey, null);
 	}
@@ -132,7 +142,7 @@ public class WorkflowController {
 		return workflowService.traceProcessInstanceExecution(processInstanceId);
 	}
 
-	@PostMapping(value="/tasks/find")
+	@PostMapping(value="/task/find")
 	@ResponseBody
 	@CrossOrigin
 	public List<TaskInfo> findTasksByQuery(@RequestBody TaskQueryInfo query) {
@@ -140,36 +150,37 @@ public class WorkflowController {
 		return workflowService.findTasksByQuery(query);
 	}
 
-	@PostMapping(value="/tasks/complete/{taskId}")
+	@PostMapping(value="/task/complete/{taskId}")
 	@CrossOrigin
 	public void completeTask(@PathVariable("taskId") String taskId, @RequestBody Map<String, VariableValueInfo> params) {
 		log.debug("");
 		workflowService.completeTask(taskId, params);
 	}
 
-	@GetMapping(value="/tasks/human/claim/{taskId}/{assignee}")
+	@GetMapping(value="/task/human/claim/{taskId}/{assignee}")
 	@CrossOrigin
 	public void claimHumanTask(String taskId, String assignee) {
 		log.debug("");
 		workflowService.claimTask(taskId, assignee);
 	}
 
-	@GetMapping(value="/tasks/human/unclaim/{taskId}/{assignee}")
+	@GetMapping(value="/task/human/unclaim/{taskId}/{assignee}")
 	@CrossOrigin
 	public void unclaimHumanTask(String taskId, String assignee) {
 		log.debug("");
 		workflowService.unclaimTask(taskId);
 	}
 
-	@PostMapping(value="/tasks/historic/find")
+	@PostMapping(value="/task/historic/find")
 	@ResponseBody
 	@CrossOrigin
 	public List<HistoricTaskInfo> findHistoricTasksByQuery(@RequestBody HistoricTaskQueryInfo query) {
 		log.debug("");
-		return workflowService.findHistoricTasksByQuery(query);
+		List<HistoricTaskInfo> hTasks=workflowService.findHistoricTasksByQuery(query);
+		return hTasks;
 	}
 	
-	@GetMapping(value="/variable-values/trace/byProcessInstanceId/{processInstanceId}")
+	@GetMapping(value="/variable-instance/trace/byProcessInstanceId/{processInstanceId}")
 	@ResponseBody
 	@CrossOrigin
 	public Map<String, List<HistoricVariableInstanceInfo>> traceAllVariableInstancesPath(@PathVariable("processInstanceId") String processInstanceId) {
@@ -177,7 +188,7 @@ public class WorkflowController {
 		return workflowService.traceAllVariableInstancesPath(processInstanceId);
 	}
 
-	@GetMapping(value="/variable-values/trace/byVariableInstanceId/{processInstanceId}/{variableInstanceId}")
+	@GetMapping(value="/variable-instance/trace/byVariableInstanceId/{processInstanceId}/{variableInstanceId}")
 	@ResponseBody
 	@CrossOrigin
 	public List<HistoricVariableInstanceInfo> traceVariableInstancePathByVariableInstanceId(

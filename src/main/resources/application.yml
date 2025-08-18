@@ -18,6 +18,13 @@ app:
       commandClassName: com.inzi.mes.be.framework.dispatch.DispatchTestCommand
 ---
 app:
+  workflow:
+    tasks:
+    - name: emailSendServiceTask
+      topicName: emailSendTopic
+      taskClassName: com.inzi.mes.be.example.EmailSendTask
+---
+app:
   kafka:
     use: true
     topics:
@@ -143,10 +150,19 @@ spring:
     bootstrap-servers: localhost:9092
 ---
 # To use camunda
+spring.main.allow-bean-definition-overriding: true
 camunda:
   bpm:
     client:
       base-url: http://localhost:8099/engine-rest
+      basic-auth:
+        username: demo
+        password: demo
+      # lock-duration: 1000 # defines how many milliseconds the External Tasks are locked until they can be fetched again
+      # subscriptions:
+      #   emailSendTopic: # topic name of the External Service Task
+      #     variable-names: [] # our business logic doesn't require any variables, so don't fetch them
+      #     process-definition-key: Sample_test_process # only filter for External Tasks with this process definition key
   autoDeploy:
     bpmnResources: 'classpath*:**/*.bpmn'
     dmnResources: 'classpath*:**/*.dmn'
