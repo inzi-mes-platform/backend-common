@@ -6,8 +6,10 @@ server:
   shutdown:
     grace-period: 7200
 server.shutdown: graceful
+# server.servlet.session.timeout: 3600 # 1시간 (단위: 초)
 ---
 logging.level.root: info
+logging.level.org.springframework.security: debug
 ---
 security.basic.enabled: false
 ---
@@ -60,11 +62,15 @@ app:
       - method: GET
         pathname: /swagger-ui/**
       - method: GET
-        pathname: /api-docs/**		
+        pathname: /api-docs/**
       - method: POST
         pathname: /auth/**
       - method: GET
-        pathname: /test/streaming/**		
+        pathname: /test/**
+      - method: POST
+        pathname: /test/**		
+    #  - method: GET
+    #    pathname: /test/api/v1/material/find/all/as-stream
     #- type: has-any-role
     #  anyRequest: false
     #  matchers:
